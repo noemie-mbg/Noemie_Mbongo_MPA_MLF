@@ -1,1 +1,87 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris, make_blobs
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC, OneClassSVM
+from numpy import quantile, where, random
 
+# Load Iris dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+print("Feature names:", iris.feature_names)
+print("First 5 samples of X:\n", X[:5, :])
+print("First 5 target values:\n", y[:5])
+
+# Split dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train SVM classifier
+SVMmodel = SVC(kernel='linear')
+SVMmodel.fit(X_train, y_train)
+print("SVM Model Accuracy:", SVMmodel.score(X_test, y_test))
+
+# Generate synthetic data for anomaly detection
+random.seed(11)
+x, _ = make_blobs(n_samples=300, centers=1, cluster_std=0.3, center_box=(4, 4))
+
+# One-Class SVM for anomaly detection
+SVMmodelOne = OneClassSVM(kernel='rbf', gamma=0.001, nu=0.03)
+SVMmodelOne.fit(x)
+pred = SVMmodelOne.predict(x)
+
+# Identify anomalies
+anom_index = where(pred == -1)
+values = x[anom_index]
+
+# Plot anomalies with circles around them
+plt.scatter(x[:, 0], x[:, 1], label='Normal Data')
+plt.scatter(values[:, 0], values[:, 1], color='red', label='Anomalies')
+for point in values:
+    plt.gca().add_patch(plt.Circle(point, 0.1, color='red', fill=False))
+plt.axis('equal')
+plt.legend()
+plt.show()
+
+# Threshold for outlier detection
+scores = SVMmodelOne.score_samples(x)
+thresh = quantile(scores, 0.01)
+print("Anomaly Score Threshold:", thresh)
+
+# Filter outliers
+index = where(scores <= thresh)
+values = x[index]
+
+# Binary classification on Iris dataset (first two features, classes 0 & 1)
+X_binary = X[y != 2, :2]
+y_binary = y[y != 2]
+
+# Train binary SVM classifier
+SVMmodel_1 = SVC(kernel='linear', C=1.0)  # Adjusted C for better generalization
+X_train_1, X_test_1, y_train_1, y_test_1 = train_test_split(X_binary, y_binary, test_size=0.2, random_state=42)
+SVMmodel_1.fit(X_train_1, y_train_1)
+print("Binary SVM Model Accuracy:", SVMmodel_1.score(X_test_1, y_test_1))
+
+# Extract model parameters
+W = SVMmodel_1.coef_
+b = SVMmodel_1.intercept_
+print("SVM Decision Boundary Coefficients:\n", W)
+print("SVM Intercept:", b)
+
+# Plot decision boundary and support vectors
+plt.scatter(X_binary[:, 0], X_binary[:, 1], c=y_binary, cmap='coolwarm')
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+# Create grid for decision boundary
+xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 50), np.linspace(ylim[0], ylim[1], 50))
+Z = SVMmodel_1.decision_function(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+
+# Plot decision boundary
+ax.contour(xx, yy, Z, levels=[0], linewidths=2, colors='black')
+
+# Highlight support vectors
+plt.scatter(SVMmodel_1.support_vectors_[:, 0], SVMmodel_1.support_vectors_[:, 1], edgecolors='green', facecolors='none', s=100, label='Support Vectors')
+plt.legend()
+plt.show()
