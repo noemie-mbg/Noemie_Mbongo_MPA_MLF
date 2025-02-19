@@ -4,54 +4,54 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
-# Charger le dataset Iris
+# Load Iris dataset
 iris = load_iris()
 iris.feature_names  # Afficher les noms des caractéristiques
 
-# Séparer les données et les étiquettes
+# Separate data and labels
 X = iris.data  # Caractéristiques des fleurs
 y = iris.target  # Étiquettes des classes
 
-# Diviser les données en ensemble d'entraînement et de test
+# Divide data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-# Entraîner un modèle SVM avec un noyau linéaire
+# Training an SVM model with a linear kernel
 SVMmodel = SVC(kernel='linear')
 SVMmodel.fit(X_train, y_train)  # Apprentissage du modèle
 SVMmodel.get_params()  # Afficher les paramètres du modèle
 print("Score du modèle SVM sur les données de test:", SVMmodel.score(X_test, y_test))
 
-# Sélectionner uniquement les deux premières classes et les deux premières caractéristiques
+# Select only the first two classes and the first two features
 X = iris.data[iris.target != 2, 0:2]
 y = iris.target[iris.target != 2]
 
-# Créer un modèle SVM pour la classification binaire
+# Creating an SVM model for binary classification
 SVMmodel_1 = SVC(kernel='linear', C=200)
 
-# Diviser les données en ensemble d'entraînement et de test
+# Divide data into training and test sets
 X_train_1, X_test_1, y_train_1, y_test_1 = train_test_split(X, y, test_size=0.2)
 
-# Entraîner le modèle SVM binaire
+# Training the binary SVM model
 SVMmodel_1.fit(X_train_1, y_train_1)
 print("Score du modèle SVM binaire:", SVMmodel_1.score(X_test_1, y_test_1))
 
-# Tracer les points de données
+# Plotting data points
 plt.scatter(X[y == 0, 0], X[y == 0, 1], color='blue', label='Classe 0')  # Points bleus
 plt.scatter(X[y == 1, 0], X[y == 1, 1], color='red', label='Classe 1')  # Points rouges
 plt.scatter(X[y == 2, 0], X[y == 2, 1], color='cyan', label='Classe 2')  # Points cyan (non utilisés ici)
 
-# Récupérer les coefficients de la frontière de décision
+# Retrieve decision boundary coefficients
 W = SVMmodel_1.coef_  # Poids du modèle
 b = SVMmodel_1.intercept_  # Biais
 print("Biais du modèle SVM:", b)
 
-# Générer des points pour tracer la frontière de décision
+# Generate decision boundary points
 x1 = np.linspace(np.min(X[:, 0]), np.max(X[:, 0]), 100)  # Générer une plage de valeurs pour x1
 x2 = -(W[0, 0] * x1 + b) / W[0, 1]  # Calculer x2 en fonction de l'équation de l'hyperplan
 
-# Tracer la frontière de décision
+# Drawing the decision boundary
 plt.plot(x1, x2.flatten(), color='black', linewidth=0.8, label='Frontière de décision')
 
-# Afficher la légende et montrer le graphique
+# Show legend and graph
 plt.legend()
 plt.show()
