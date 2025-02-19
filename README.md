@@ -1,3 +1,3 @@
-student : Noémie Mbongo
+Student : Noémie Mbongo
 
-another information : member of Isep's group
+Another information : member of Isep's group
