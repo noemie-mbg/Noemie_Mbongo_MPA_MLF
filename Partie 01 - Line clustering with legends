@@ -6,19 +6,19 @@ from sklearn.svm import SVC
 
 # Load Iris dataset
 iris = load_iris()
-iris.feature_names  # Afficher les noms des caractéristiques
+iris.feature_names  # Display feature names
 
 # Separate data and labels
-X = iris.data  # Caractéristiques des fleurs
-y = iris.target  # Étiquettes des classes
+X = iris.data  # Flower characteristics
+y = iris.target  # Class labels
 
 # Divide data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # Training an SVM model with a linear kernel
 SVMmodel = SVC(kernel='linear')
-SVMmodel.fit(X_train, y_train)  # Apprentissage du modèle
-SVMmodel.get_params()  # Afficher les paramètres du modèle
+SVMmodel.fit(X_train, y_train)  # Model learning
+SVMmodel.get_params()  # Display model parameters
 print("Score du modèle SVM sur les données de test:", SVMmodel.score(X_test, y_test))
 
 # Select only the first two classes and the first two features
@@ -36,18 +36,18 @@ SVMmodel_1.fit(X_train_1, y_train_1)
 print("Score du modèle SVM binaire:", SVMmodel_1.score(X_test_1, y_test_1))
 
 # Plotting data points
-plt.scatter(X[y == 0, 0], X[y == 0, 1], color='blue', label='Classe 0')  # Points bleus
-plt.scatter(X[y == 1, 0], X[y == 1, 1], color='red', label='Classe 1')  # Points rouges
-plt.scatter(X[y == 2, 0], X[y == 2, 1], color='cyan', label='Classe 2')  # Points cyan (non utilisés ici)
+plt.scatter(X[y == 0, 0], X[y == 0, 1], color='blue', label='Classe 0') 
+plt.scatter(X[y == 1, 0], X[y == 1, 1], color='red', label='Classe 1') 
+plt.scatter(X[y == 2, 0], X[y == 2, 1], color='cyan', label='Classe 2')  # not used here
 
 # Retrieve decision boundary coefficients
-W = SVMmodel_1.coef_  # Poids du modèle
-b = SVMmodel_1.intercept_  # Biais
+W = SVMmodel_1.coef_  
+b = SVMmodel_1.intercept_  
 print("Biais du modèle SVM:", b)
 
 # Generate decision boundary points
-x1 = np.linspace(np.min(X[:, 0]), np.max(X[:, 0]), 100)  # Générer une plage de valeurs pour x1
-x2 = -(W[0, 0] * x1 + b) / W[0, 1]  # Calculer x2 en fonction de l'équation de l'hyperplan
+x1 = np.linspace(np.min(X[:, 0]), np.max(X[:, 0]), 100) 
+x2 = -(W[0, 0] * x1 + b) / W[0, 1] 
 
 # Drawing the decision boundary
 plt.plot(x1, x2.flatten(), color='black', linewidth=0.8, label='Frontière de décision')
