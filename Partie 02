@@ -34,24 +34,6 @@ pred = SVMmodelOne.predict(x)
 anom_index = where(pred == -1)
 values = x[anom_index]
 
-# Plot anomalies with circles around them
-plt.scatter(x[:, 0], x[:, 1], label='Normal Data')
-plt.scatter(values[:, 0], values[:, 1], color='red', label='Anomalies')
-for point in values:
-    plt.gca().add_patch(plt.Circle(point, 0.1, color='red', fill=False))
-plt.axis('equal')
-plt.legend()
-plt.show()
-
-# Threshold for outlier detection
-scores = SVMmodelOne.score_samples(x)
-thresh = quantile(scores, 0.01)
-print("Anomaly Score Threshold:", thresh)
-
-# Filter outliers
-index = where(scores <= thresh)
-values = x[index]
-
 # Binary classification on Iris dataset (first two features, classes 0 & 1)
 X_binary = X[y != 2, :2]
 y_binary = y[y != 2]
@@ -68,18 +50,14 @@ b = SVMmodel_1.intercept_
 print("SVM Decision Boundary Coefficients:\n", W)
 print("SVM Intercept:", b)
 
-# Plot decision boundary and support vectors
-plt.scatter(X_binary[:, 0], X_binary[:, 1], c=y_binary, cmap='coolwarm')
-ax = plt.gca()
-xlim = ax.get_xlim()
-ylim = ax.get_ylim()
+# Plot support vectors and anomalies
+plt.figure(figsize=(8, 6))
+plt.scatter(X_binary[:, 0], X_binary[:, 1], c=y_binary, cmap='coolwarm', label='Classification Data')
+plt.scatter(x[:, 0], x[:, 1], label='Normal Data', alpha=0.3)
+plt.scatter(values[:, 0], values[:, 1], color='red', label='Anomalies')
 
-# Create grid for decision boundary
-xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 50), np.linspace(ylim[0], ylim[1], 50))
-Z = SVMmodel_1.decision_function(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
-
-# Plot decision boundary
-ax.contour(xx, yy, Z, levels=[0], linewidths=2, colors='black')
+for point in values:
+    plt.gca().add_patch(plt.Circle(point, 0.1, color='red', fill=False))
 
 # Highlight support vectors
 plt.scatter(SVMmodel_1.support_vectors_[:, 0], SVMmodel_1.support_vectors_[:, 1], edgecolors='green', facecolors='none', s=100, label='Support Vectors')
