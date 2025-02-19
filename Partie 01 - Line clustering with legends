@@ -50,7 +50,7 @@ x1 = np.linspace(np.min(X[:, 0]), np.max(X[:, 0]), 100)
 x2 = -(W[0, 0] * x1 + b) / W[0, 1] 
 
 # Drawing the decision boundary
-plt.plot(x1, x2.flatten(), color='black', linewidth=0.8, label='Frontière de décision')
+plt.plot(x1, x2.flatten(), color='black', linewidth=0.8, label='Boundary       ')
 
 # Show legend and graph
 plt.legend()
