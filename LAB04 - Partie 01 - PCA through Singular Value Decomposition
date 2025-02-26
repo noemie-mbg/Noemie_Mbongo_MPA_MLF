@@ -1,0 +1,14 @@
+import numpy as np
+
+X = np.array([[2, 1, 0], [4, 3, 0]])  # Define a 2x3 matrix
+
+R = np.matmul(X, X.T) / 3  # Compute (X * X^T) / 3, which results in a 2x2 matrix
+
+[U, D, V] = np.linalg.svd(R)  # Perform Singular Value Decomposition (SVD) on R
+
+print(U)  # Print the left singular vectors of R
+u1 = U[:, 0]  # First left singular vector
+u2 = U[:, 1]  # Second left singular vector
+
+print(u1)  # Print u1
+print(u2)  # Print u2
