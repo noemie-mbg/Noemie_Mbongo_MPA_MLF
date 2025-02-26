@@ -1,0 +1,82 @@
+# Import train_test_split as in last PC lab, split X (original) into train and test, train KNN classifier on full 4-dimensional X
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+knn1=KNeighborsClassifier(n_neighbors = 3)
+X_train, X_test, y_train, y_test = train_test_split(Xpp,y,test_size=0.3)
+
+print(X_train.shape)
+print(X_test.shape)
+
+knn1=KNeighborsClassifier(n_neighbors = 3)
+knn1.fit(X_train,y_train)
+Ypred=knn1.predict(X_test)
+
+
+# Import and show confusion matrix
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
+print(confusion_matrix(y_test,Ypred))
+
+confusion_matrix(y_test,Ypred)
+ConfusionMatrixDisplay.from_predictions(y_test,Ypred)
+
+#2
+
+x_trainpca, X_testpca, y_trainpca, y_testpca = train_test_split(Xpca[:,0:2],y,test_size=0.3)
+knn1=KNeighborsClassifier(n_neighbors=3)
+knn1.fit(x_trainpca,y_trainpca)
+Ypredpca=knn1.predict(X_testpca)
+
+confusion_matrix(y_testpca,Ypredpca)
+ConfusionMatrixDisplay.from_predictions(y_testpca, Ypredpca)
+
+
+
+
+# Importing necessary modules for KNN, train-test split, and confusion matrix
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+# Initializing the KNN classifier with k = 3 neighbors (n_neighbors parameter)
+knn1 = KNeighborsClassifier(n_neighbors=3)
+
+# Splitting the data Xpp (normalized data) into training and testing sets
+# 70% of the data for training, 30% for testing
+X_train, X_test, y_train, y_test = train_test_split(Xpp, y, test_size=0.3)
+
+# Displaying the shape of the training and testing sets to verify the size
+print(X_train.shape)  # Displays the shape of X_train (training data)
+print(X_test.shape)   # Displays the shape of X_test (testing data)
+
+# Training the KNN classifier on the training data
+knn1.fit(X_train, y_train)
+
+# Predicting the classes for the test data
+Ypred = knn1.predict(X_test)
+
+# Displaying the confusion matrix to evaluate the model's performance
+print(confusion_matrix(y_test, Ypred))  # Displays the raw confusion matrix
+
+# Displaying the confusion matrix visually
+ConfusionMatrixDisplay.from_predictions(y_test, Ypred)  # Shows the confusion matrix with labels
+
+# 2nd part: Applying PCA to reduce dimensions (to 2 dimensions here) and redoing the KNN model
+# Splitting the PCA-reduced data (reduced to 2 dimensions) into training and testing sets
+x_trainpca, X_testpca, y_trainpca, y_testpca = train_test_split(Xpca[:, 0:2], y, test_size=0.3)
+
+# Training the KNN model on the PCA-reduced data
+knn1 = KNeighborsClassifier(n_neighbors=3)
+knn1.fit(x_trainpca, y_trainpca)
+
+# Predicting the classes for the test data after dimensionality reduction (PCA)
+Ypredpca = knn1.predict(X_testpca)
+
+# Displaying the confusion matrix for the PCA-reduced data
+confusion_matrix(y_testpca, Ypredpca)  # Displays the confusion matrix for PCA
+
+# Displaying the confusion matrix visually for the PCA-reduced data
+ConfusionMatrixDisplay.from_predictions(y_testpca, Ypredpca)  # Shows the confusion matrix for PCA
