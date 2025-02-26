@@ -1,0 +1,116 @@
+import numpy as np
+
+X=np.array([[2, 1, 0],[4, 3, 0]])
+
+R = np.matmul(X,X.T)/3
+
+[U,D,V]=np.linalg.svd(R)
+print(U)
+u1=U[:,0] 
+u2=U[:,1]
+
+print(u1)
+print(u2)
+
+# Load Iris dataset as in the last PC lab:
+from sklearn.datasets import load_iris
+iris=load_iris()
+iris.feature_names
+print(iris.feature_names)
+print(iris.data[0:5,:])
+print(iris.target[:])
+
+# We have 4 dimensions of data, plot the first three colums in 3D
+X=iris.data
+y=iris.target
+import matplotlib.pyplot as plt
+axes1=plt.axes(projection='3d')
+axes1.scatter3D(X[y==0,1],X[y==0,1],X[y==0,2],color='green')
+axes1.scatter3D(X[y==1,1],X[y==1,1],X[y==1,2],color='blue')
+axes1.scatter3D(X[y==2,1],X[y==2,1],X[y==2,2],color='magenta')
+plt.show
+
+# Pre-processing is an important step, you can try either StandardScaler (zero mean, unit variance of features)
+# or MinMaxScaler (to interval from 0 to 1)
+from sklearn import preprocessing,decomposition
+from sklearn.preprocessing import StandardScaler
+Xscaler = StandardScaler()
+Xpp=Xscaler.fit_transform(X)
+
+pca=decomposition.PCA(n_components=3)
+pca.fit(Xpp)
+Xpca = pca.transform(Xpp)
+
+axes2=plt.axes(projection='3d')
+axes2.scatter3D(Xpca[y==0,0],Xpca[y==0,1],Xpca[y==0,2],color='green')
+axes2.scatter3D(Xpca[y==1,0],Xpca[y==1,1],Xpca[y==1,2],color='blue')
+axes2.scatter3D(Xpca[y==2,0],Xpca[y==2,1],Xpca[y==2,2],color='magenta')
+plt.show
+
+pca.explained_variance_
+print(pca.explained_variance_)
+
+pca.explained_variance_ratio_
+print(pca.explained_variance_ratio_)
+
+plt.scatter(Xpca[y==0,0],Xpca[y==0,1],color='green')
+plt.scatter(Xpca[y==1,0],Xpca[y==1,1],color='blue')
+plt.scatter(Xpca[y==2,0],Xpca[y==2,1],color='magenta')
+
+
+import numpy as np
+
+# Create a 2x3 matrix X
+X = np.array([[2, 1, 0], [4, 3, 0]])
+
+# Compute the matrix R as the product of X and its transpose, divided by 3
+R = np.matmul(X, X.T) / 3
+
+# Perform Singular Value Decomposition (SVD) on matrix R
+[U, D, V] = np.linalg.svd(R)
+
+# Print the left singular vectors (U)
+print(U)
+
+# Extract the first and second left singular vectors (columns of U)
+u1 = U[:, 0]
+u2 = U[:, 1]
+
+# Print the first and second left singular vectors
+print(u1)
+print(u2)
+
+# Load the Iris dataset from sklearn
+from sklearn.datasets import load_iris
+iris = load_iris()
+
+# Print the feature names (the columns of the dataset)
+print(iris.feature_names)
+
+# Print the first 5 rows of the feature data
+print(iris.data[0:5, :])
+
+# Print the target labels (class labels for the Iris dataset)
+print(iris.target[:])
+
+# Prepare the data for 3D plotting: we have 4 features, but we'll plot the first three
+X = iris.data
+y = iris.target
+
+# Import matplotlib for plotting
+import matplotlib.pyplot as plt
+
+# Create a 3D scatter plot of the first three features of the Iris dataset
+axes1 = plt.axes(projection='3d')
+
+# Plot the data points of class 0 (setosa) in green
+axes1.scatter3D(X[y == 0, 1], X[y == 0, 1], X[y == 0, 2], color='green')
+
+# Plot the data points of class 1 (versicolor) in blue
+axes1.scatter3D(X[y == 1, 1], X[y == 1, 1], X[y == 1, 2], color='blue')
+
+# Plot the data points of class 2 (virginica) in magenta
+axes1.scatter3D(X[y == 2, 1], X[y == 2, 1], X[y == 2, 2], color='magenta')
+
+# Display the 3D plot
+plt.show()
