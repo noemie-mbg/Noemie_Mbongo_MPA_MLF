@@ -1,1 +1,106 @@
 
+import matplotlib.pyplot as plt
+import copy
+import numpy as np
+from numpy.linalg import norm
+from sklearn.cluster import KMeans
+
+loaded_points = np.load('k_mean_points.npy')
+
+plt.figure()
+plt.scatter(loaded_points[:,0],loaded_points[:,1]) #don't sure about shape
+plt.show()
+
+k = 3
+
+# 2.initialize centroids
+
+
+#def initialize_clusters(points: np.array, k_clusters: int):
+ #   initial_clusters = points(np.random.choice(points.shape(0), size=k_clusters))
+  #  return initialize_clusters
+
+#ini_clusters = initialize_clusters(loaded_points, k)
+#print(initialize_clusters(loaded_points, k))
+
+def initialize_clusters(points: np.ndarray, k_clusters: int):
+    np.random.shuffle(points)
+    return points[:k_clusters]
+
+print(initialize_clusters(loaded_points,k))
+
+# 3. Calculate distance from centroids to all points in datasets
+
+def calculate_metric(points: np.ndarray, centroid: np.ndarray) -> np.ndarray:
+    distances_array = norm(points - centroid, axis=1)
+    return distances_array 
+
+print(calculate_metric(loaded_points,k))
+
+def compute_distances(points: np.ndarray, centroids_points: np.ndarray) -> np.ndarray:
+    for centroid in centroids_points:
+        distances_array = np.array([calculate_metric(points, centroid) ])
+        return distances_array
+
+print(compute_distances(loaded_points,k))
+
+# 4. Assign datapoints to the closest centroids
+
+def assign_centroids(distances: np.ndarray) -> np.ndarray:
+    assigned_centroids= np.argmin(distances, axis=0)
+    return assigned_centroids
+
+print(assign_centroids(loaded_points,k))
+
+
+# 5. Calculate objective function
+
+def calculate_objective(assigned_centroids: np.ndarray, distances: np.ndarray) -> float:
+    min_distances=distances[assigned_centroids, np.arange(len(assigned_centroids))]
+    objective_function_value= np.sum(min_distances)
+    return objective_function_value
+
+print(calculate_objective(loaded_points,k))
+
+# 6. Compute new controids to the clusters by taking the average of the all data points that belong to each cluster
+
+def calculate_new_centroids(points: np.ndarray, assigned_centroids: np.ndarray, k_clusters: int) -> np.ndarray:
+    new_clusters = []
+    for i in range(k_clusters):
+        cluster_points = points[assigned_centroids == i]
+        if len(cluster_points) == 0:
+            new_clusters.append(points[np.random.randint(0, len(points))])
+        else:
+            new_clusters.append(cluster_points.mean(axis=0))
+    new_clusters=np.array(new_clusters)
+    return new_clusters
+
+print(calculate_new_centroids(loaded_points,k))
+
+# 7. repeat steps 2-6. until there is no change in objective function or until the maximum n of iterations is reached
+
+def fit(points: np.ndarray, k_clusters: int, n_of_iterations: int, error: float = 0.001) -> tuple:
+    centroids = initialize_clusters(points.copy(), k_clusters)
+    last_objective = 10000.0
+    
+    for _ in range(n_of_iterations):
+        distances = compute_distances(points, centroids)
+        assigned_centroids = assign_centroids(distances)
+        objective = calculate_objective(assigned_centroids, distances)
+        
+        if abs(last_objective - objective) < error:
+            break
+        
+        last_objective = objective
+        centroids = calculate_new_centroids(points, assigned_centroids, k_clusters)
+    
+    return centroids, last_objective
+
+# Running the K-means algorithm
+centroids, objective_value = fit(loaded_points, k, 100)
+c=assign_centroids(compute_distances(loaded_points, centroids))
+# Plot results
+plt.figure()
+plt.scatter(loaded_points[:, 0], loaded_points[:, 1])
+plt.scatter(centroids[:, 0], centroids[:, 1], c='red')
+plt.show()
