@@ -12,15 +12,7 @@ plt.show()
 
 k = 3
 
-# 2.initialize centroids
-
-
-#def initialize_clusters(points: np.array, k_clusters: int):
- #   initial_clusters = points(np.random.choice(points.shape(0), size=k_clusters))
-  #  return initialize_clusters
-
-#ini_clusters = initialize_clusters(loaded_points, k)
-#print(initialize_clusters(loaded_points, k))
+# Initialize centroids
 
 def initialize_clusters(points: np.ndarray, k_clusters: int):
     np.random.shuffle(points)
@@ -28,7 +20,7 @@ def initialize_clusters(points: np.ndarray, k_clusters: int):
 
 print(initialize_clusters(loaded_points,k))
 
-# 3. Calculate distance from centroids to all points in datasets
+# Calculate distance from centroids to all points in datasets
 
 def calculate_metric(points: np.ndarray, centroid: np.ndarray) -> np.ndarray:
     distances_array = norm(points - centroid, axis=1)
@@ -43,7 +35,7 @@ def compute_distances(points: np.ndarray, centroids_points: np.ndarray) -> np.nd
 
 print(compute_distances(loaded_points,k))
 
-# 4. Assign datapoints to the closest centroids
+# Assign datapoints to the closest centroids
 
 def assign_centroids(distances: np.ndarray) -> np.ndarray:
     assigned_centroids= np.argmin(distances, axis=0)
@@ -52,7 +44,7 @@ def assign_centroids(distances: np.ndarray) -> np.ndarray:
 print(assign_centroids(loaded_points,k))
 
 
-# 5. Calculate objective function
+# Calculate objective function
 
 def calculate_objective(assigned_centroids: np.ndarray, distances: np.ndarray) -> float:
     min_distances=distances[assigned_centroids, np.arange(len(assigned_centroids))]
@@ -61,7 +53,7 @@ def calculate_objective(assigned_centroids: np.ndarray, distances: np.ndarray) -
 
 print(calculate_objective(loaded_points,k))
 
-# 6. Compute new controids to the clusters by taking the average of the all data points that belong to each cluster
+# Compute new controids to the clusters by taking the average of the all data points that belong to each cluster
 
 def calculate_new_centroids(points: np.ndarray, assigned_centroids: np.ndarray, k_clusters: int) -> np.ndarray:
     new_clusters = []
@@ -76,7 +68,7 @@ def calculate_new_centroids(points: np.ndarray, assigned_centroids: np.ndarray, 
 
 print(calculate_new_centroids(loaded_points,k))
 
-# 7. repeat steps 2-6. until there is no change in objective function or until the maximum n of iterations is reached
+# Repeat steps 2-6. until there is no change in objective function or until the maximum n of iterations is reached
 
 def fit(points: np.ndarray, k_clusters: int, n_of_iterations: int, error: float = 0.001) -> tuple:
     centroids = initialize_clusters(points.copy(), k_clusters)
