@@ -33,8 +33,6 @@ def compute_distances(points: np.ndarray, centroids_points: np.ndarray) -> np.nd
         distances_array = np.array([calculate_metric(points, centroid) ])
         return distances_array
 
-print(compute_distances(loaded_points,k))
-
 # Assign datapoints to the closest centroids
 
 def assign_centroids(distances: np.ndarray) -> np.ndarray:
