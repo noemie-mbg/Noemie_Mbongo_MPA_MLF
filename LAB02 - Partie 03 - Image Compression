@@ -3,8 +3,10 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Load the image from file
 loaded_image = imread('fish.jpg')
 
+# Display the original image
 plt.imshow(loaded_image)
 plt.show()
 
@@ -23,10 +25,10 @@ def compress_image(image: np.ndarray, number_of_colours: int) -> np.ndarray:
     
     return np.uint8(compressed_image)
     
-    return image
-
+ # Compress the image using 30 colors   
 img = compress_image(loaded_image, 30)
 
+# Display the compressed image
 plt.figure()
 plt.imshow(img)
 plt.show()
