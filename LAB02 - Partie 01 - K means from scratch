@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import copy
 import numpy as np
@@ -96,10 +95,9 @@ def fit(points: np.ndarray, k_clusters: int, n_of_iterations: int, error: float 
     
     return centroids, last_objective
 
-# Running the K-means algorithm
 centroids, objective_value = fit(loaded_points, k, 100)
 c=assign_centroids(compute_distances(loaded_points, centroids))
-# Plot results
+
 plt.figure()
 plt.scatter(loaded_points[:, 0], loaded_points[:, 1])
 plt.scatter(centroids[:, 0], centroids[:, 1], c='red')
