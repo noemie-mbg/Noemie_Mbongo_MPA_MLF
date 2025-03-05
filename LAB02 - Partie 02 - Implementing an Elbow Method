@@ -1,1 +1,25 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
 
+# Generate sample data
+X, _ = make_blobs(n_samples=300, centers=4, cluster_std=1.0, random_state=42)
+
+# Define range of k values
+k_all = range(2, 10)
+all_objective = []
+
+# Compute Sum of Squared Distances for each k
+for k in k_all:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    kmeans.fit(X)
+    all_objective.append(kmeans.inertia_)  # Inertia is the sum of squared distances
+
+# Plot the Elbow Method
+plt.figure(figsize=(8, 5))
+plt.plot(k_all, all_objective, marker='o', linestyle='--')
+plt.xlabel('Number of Clusters (K)')
+plt.ylabel('Sum of Squared Distances')
+plt.title('Elbow Method for Optimal K')
+plt.show()
