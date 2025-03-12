@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # 1. Prepare data
+
 X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])  
 y = np.array([0, 1, 1, 0])
 
 # 2. Creating the model
+
 model = Sequential()
 model.add(InputLayer(input_shape=(2,)))  
 model.add(Dense(2, activation='sigmoid'))  
