@@ -67,14 +67,6 @@ print("Y Train Encoded:\n", y_train_encoded[:5])
 
 # 7. Model Evaluation
 
-x_test.replace('?', np.nan, inplace=True)
-x_test.fillna(x_test.mode().iloc[0], inplace=True
-
-x_te=pd.get_dummies(x_test)
-x_te
-y_te= y_test.replace({'republican' : 1, 'democrat' : 0})
-y_te
-
 
 
 
