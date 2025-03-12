@@ -21,15 +21,9 @@ model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accurac
 
 # 4. Model training
 
-# Train the model for 2000 epochs with batch size of 1
-history = model.fit(X, y, epochs=2000, batch_size=1, verbose=0)
+history = model.fit(X, y, epochs=2000, batch_size=1, verbose=0) # Train the model for 2000 epochs with batch size of 1
 
-plt.plot(history.history['loss'], label='Loss')
-plt.plot(history.history['accuracy'], label='Accuracy')
-plt.xlabel('Epochs')
-plt.ylabel('Metrics')
-plt.legend()
-plt.show()
+print(history.history.keys())  
 
 # 5. Model evaluation
 
