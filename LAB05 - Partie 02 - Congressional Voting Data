@@ -86,7 +86,7 @@ history = model.fit(x_train, y_train, validation_split=0.2, epochs=50, batch_siz
 
 # 7. Model Evaluation
 
-for col in x_train.columns:
+for col in x_train.columns: # First, apply the same preprocessing you did to train set to test set also
     most_frequent = x_train[col].mode()[0]  
     x_test[col] = x_test[col].replace('?', most_frequent)
 
@@ -97,12 +97,12 @@ scaler = StandardScaler()
 x_train_scaled = scaler.fit_transform(x_train)  
 x_test_scaled = scaler.transform(x_test)  
 
-test_loss, test_accuracy = model.evaluate(x_test_scaled, y_test, verbose=1)
+test_loss, test_accuracy = model.evaluate(x_test_scaled, y_test, verbose=1) # Evaluate the model, print final accuracy and loss
 
 print(f"Test Loss: {test_loss:.4f}")
 print(f"Test Accuracy: {test_accuracy:.4f}")
 
-history_dict = history.history
+history_dict = history.history # Plot loss and validation loss depending on the training epochs into one graph. In another graph, plot accuracy and validation accuracy
 
 plt.figure(figsize=(10, 5))
 plt.plot(history_dict['loss'], label='Training Loss')
@@ -121,5 +121,3 @@ plt.ylabel('Accuracy')
 plt.title('Training & Validation Accuracy')
 plt.legend()
 plt.show()
-
-
