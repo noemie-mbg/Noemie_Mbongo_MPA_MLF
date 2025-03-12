@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # 1. Loading dataset
 
-path_to_dataset = 'drive/MyDrive/MPA-MLF/EX_5/voting_complete.csv' # change the PATH
+path_to_dataset = 'drive/MyDrive/voting_complete.csv'
 pd_dataset = pd.read_csv(path_to_dataset)
 
 pd_dataset
