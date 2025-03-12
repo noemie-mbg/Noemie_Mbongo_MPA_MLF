@@ -1,38 +1,94 @@
-pip install tensorflow
 
+# Import necessary libraries
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, InputLayer
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Define XOR input (X) and expected output (y)
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])  # Input values
+y = np.array([0, 1, 1, 0])  # Expected output (XOR logic)
 
-X = [[0, 0], [0, 1], [1, 0], [1, 1]]
-y = [0, 1, 1, 0]
-
-X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-y = np.array([0,1,1,0])
-
+# Define the neural network model
 model = Sequential()
-model.add(InputLayer(input_shape=(2,)))  # Corrected tuple format
-model.add(Dense(2, activation='sigmoid'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(InputLayer(input_shape=(2,)))  # Input layer with 2 neurons (for XOR inputs)
+model.add(Dense(2, activation='sigmoid'))  # Hidden layer with 2 neurons using sigmoid activation
+model.add(Dense(1, activation='sigmoid'))  # Output layer with 1 neuron using sigmoid activation
 
+# Define the optimizer with a learning rate of 0.1
 optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+
+# Compile the model with binary cross-entropy loss and accuracy metric
 model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
+# Train the model for 2000 epochs with batch size of 1
 history = model.fit(X, y, epochs=2000, batch_size=1, verbose=0)
 
+# Evaluate the model's performance on the training data
 loss, accuracy = model.evaluate(X, y, verbose=0)
-print('Accuracy: {:.2f}'.format(accuracy*100))
+print('Final Accuracy: {:.2f}%'.format(accuracy * 100))
 
+# Make predictions on XOR input samples
+print("\nPredictions on XOR dataset:")
 for id_x, data_sample in enumerate(X):
-  prediction = model.predict(data_sample.reshape(1, -1))
-  print(f"Data sample is {data_sample}, prediction from model {prediction}, ground_truth {y[id_x]}")
+    prediction = model.predict(data_sample.reshape(1, -1))  # Reshape input to match model's expected shape
+    print(f"Input: {data_sample}, Prediction: {prediction}, Ground Truth: {y[id_x]}")
 
+# Plot the loss curve over epochs
 plt.figure()
 plt.plot(history.history['loss'])
-plt.xlabel('n epochs')
-plt.ylabel('loss')
+plt.xlabel('Number of Epochs')
+plt.ylabel('Loss')
+plt.title('Loss over Epochs')
+plt.show()
 
-##ajouter phase de modification
+#My own modification to observe
+
+# Import necessary libraries
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, InputLayer
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Define input and output data (XOR problem)
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([0, 1, 1, 0])
+
+# Hyperparameters
+epochs = 1000  # Number of training iterations
+learning_rate = 0.05  # Learning rate for the optimizer
+batch_size = 2  # Number of samples per batch during training
+hidden_neurons = 4  # Number of neurons in the hidden layer
+
+# Define the neural network model
+model = Sequential()
+model.add(InputLayer(input_shape=(2,)))  # Input layer with 2 neurons (XOR inputs)
+model.add(Dense(hidden_neurons, activation='relu'))  # Hidden layer with 'ReLU' activation
+model.add(Dense(1, activation='sigmoid'))  # Output layer with 'sigmoid' activation
+
+# Compile the model with a stochastic gradient descent (SGD) optimizer
+optimizer = tf.keras.optimizers.SGD(learning_rate=learning_rate)
+model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+# Train the model
+history = model.fit(X, y, epochs=epochs, batch_size=batch_size, verbose=1)
+
+# Evaluate the model's performance
+loss, accuracy = model.evaluate(X, y, verbose=1)
+print('Final Accuracy: {:.2f}%'.format(accuracy * 100))
+
+# Make predictions on input data
+print("\nPredictions on XOR dataset:")
+for id_x, data_sample in enumerate(X):
+    prediction = model.predict(data_sample.reshape(1, -1))  # Reshape input to match model's expected shape
+    print(f"Input: {data_sample}, Prediction: {prediction}, Ground Truth: {y[id_x]}")
+
+# Plot the loss curve over epochs
+plt.figure()
+plt.plot(history.history['loss'])
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Loss over epochs')
+plt.show()
