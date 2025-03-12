@@ -1,5 +1,3 @@
-# 0. First import libraries
-
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, InputLayer
 import tensorflow as tf
