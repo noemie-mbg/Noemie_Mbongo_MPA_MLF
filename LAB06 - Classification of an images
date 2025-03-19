@@ -1,1 +1,112 @@
+from keras.models import Sequential
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, BatchNormalization
+from keras.optimizers import Adam
+from keras.datasets import cifar10
+from keras.utils import to_categorical
+import matplotlib.pyplot as plt
+import numpy as np
+import cv2
 
+# Chargement du jeu de données CIFAR-10
+(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+labels = {0: 'airplane', 1: 'automobile', 2: 'bird', 3: 'cat', 4: 'deer',
+          5: 'dog', 6: 'frog', 7: 'horse', 8: 'ship', 9: 'truck'}
+
+# Normalisation des images
+X_train = X_train.astype('float32') / 255.0
+X_test = X_test.astype('float32') / 255.0
+
+y_train = to_categorical(y_train, num_classes=10)
+y_test = to_categorical(y_test, num_classes=10)
+
+def display_random_images(x_data: np.array, y_data: np.array, count: int = 10) -> None:
+    """Affiche un ensemble d'images aléatoires avec leurs étiquettes."""
+    selected_ind = np.random.choice(len(x_data), count)
+    selected_img = x_data[selected_ind]
+    selected_labels = [labels[np.argmax(y_data[i])] for i in selected_ind]
+    
+    plt.figure(figsize=(20, 5))
+    for i in range(count):
+        plt.subplot(1, count, i + 1)
+        plt.imshow(selected_img[i])
+        plt.title(selected_labels[i], fontsize=10)
+        plt.axis('off')
+    plt.show()
+
+# Modèle CNN amélioré
+model = Sequential()
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(32, 32, 3)))
+model.add(BatchNormalization())
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Flatten())
+model.add(Dense(512, activation='relu'))
+model.add(BatchNormalization())
+model.add(Dropout(0.5))
+model.add(Dense(10, activation='softmax'))
+
+# Optimisation avec Adam
+optimizer = Adam(learning_rate=0.001)
+model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+# Entraînement du modèle
+history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2)
+
+# Évaluation du modèle
+score = model.evaluate(X_test, y_test, verbose=0)
+print('Test loss:', score[0])
+print(f'Test accuracy: {score[1]*100:.2f}%')
+
+# Affichage des performances
+plt.figure()
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.legend()
+plt.title("Évolution de la perte")
+plt.show()
+
+plt.figure()
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.legend()
+plt.title("Évolution de l'accuracy")
+plt.show()
+
+def show_the_best_predictions(model, x_test: np.array, y_test: np.array, n_of_pred: int = 10) -> None:
+    """Affiche les meilleures prédictions avec la confiance du modèle."""
+    predictions = model.predict(x_test)
+    predictions_ind = np.argmax(predictions, axis=1)
+    y_test_ind = np.argmax(y_test, axis=1)
+    correct_indices = np.where(predictions_ind == y_test_ind)[0]
+    
+    if len(correct_indices) == 0:
+        print("Aucune prédiction correcte trouvée.")
+        return
+    
+    confidences = predictions[correct_indices, y_test_ind[correct_indices]]
+    sorted_ind = np.argsort(confidences)[::-1][:n_of_pred]
+    selected_images = x_test[correct_indices][sorted_ind]
+    selected_labels = y_test_ind[correct_indices][sorted_ind]
+    selected_confidences = confidences[sorted_ind]
+    
+    plt.figure(figsize=(20, 5))
+    for i in range(len(sorted_ind)):
+        plt.subplot(1, n_of_pred, i + 1)
+        plt.imshow(selected_images[i])
+        plt.title(f"{labels[selected_labels[i]]}:\n{selected_confidences[i]*100:.2f}%", fontsize=10)
+        plt.axis('off')
+    plt.show()
+
+# Affichage des meilleures prédictions
+show_the_best_predictions(model, X_test, y_test)
