@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-# Chargement du jeu de données CIFAR-10
+# Loading the dataset
 (X_train, y_train), (X_test, y_test) = cifar10.load_data()
 
 labels = {0: 'airplane', 1: 'automobile', 2: 'bird', 3: 'cat', 4: 'deer',
           5: 'dog', 6: 'frog', 7: 'horse', 8: 'ship', 9: 'truck'}
 
-# Normalisation des images
+# Image normalization
 X_train = X_train.astype('float32') / 255.0
 X_test = X_test.astype('float32') / 255.0
 
@@ -34,7 +34,7 @@ def display_random_images(x_data: np.array, y_data: np.array, count: int = 10) -
         plt.axis('off')
     plt.show()
 
-# Modèle CNN amélioré
+# Enhanced CNN model
 model = Sequential()
 model.add(Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(32, 32, 3)))
 model.add(BatchNormalization())
@@ -56,19 +56,19 @@ model.add(BatchNormalization())
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
-# Optimisation avec Adam
+# Optimization
 optimizer = Adam(learning_rate=0.001)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
-# Entraînement du modèle
+# Model drive
 history = model.fit(X_train, y_train, epochs=30, batch_size=128, validation_split=0.2)
 
-# Évaluation du modèle
+# Model evaluation
 score = model.evaluate(X_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print(f'Test accuracy: {score[1]*100:.2f}%')
 
-# Affichage des performances
+# Performance display
 plt.figure()
 plt.plot(history.history['loss'], label='Train Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
@@ -108,5 +108,5 @@ def show_the_best_predictions(model, x_test: np.array, y_test: np.array, n_of_pr
         plt.axis('off')
     plt.show()
 
-# Affichage des meilleures prédictions
+# Display
 show_the_best_predictions(model, X_test, y_test)
