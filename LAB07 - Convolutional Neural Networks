@@ -1,0 +1,102 @@
+(X_train, y_train), (X_test, y_test) = mnist.load_data()# Import libraries
+
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow. keras.utils import to_categorical
+from tensorflow.keras.optimizers import Adam
+
+font = {'weight' :  'bold','size' :  12}
+
+matplotlib.rc('font', **font)
+
+# Load Dataset
+
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+# Dataset examination
+
+def display_random_images(x_data: np.array, y_data: np.array, count: int = 10) -> None:
+  index = np.array(len(x_data))
+  selected_ind = np.random.choice(index, count)
+
+  selected_img = x_data[selected_ind]
+  selected_labels = y_data[selected_ind]
+  concat_img = np.concatenate(selected_img, axis=1)
+
+  plt.figure(figsize=(20,10))
+  plt.imshow(concat_img, cmap="gray")
+
+  for id_label, label in enumerate(selected_labels):
+    plt.text(14 + 28*id_label, 28*(5/4), label)
+  plt.axis('off')
+  plt.show()
+
+display_random_images(X_train, y_train)
+
+# Dataset preprocessing
+
+X_train = X_train.astype('float32') / 255
+X_test = X_test.astype('float32') / 255
+
+X_train = X_train.reshape(-4, 28, 28, 1)
+X_test = X_test.reshape(-1, 28, 28, 1)
+
+y_train = to_categorical(y_train, 10)
+y_test = to_categorical(y_test, 10)
+
+# Define the model structure
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+
+model = Sequential()
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dense(10, activation='softmax'))  # 10 classes pour MNIST
+
+model.summary()
+
+# Compile the model
+
+loss = None
+optimizer = None
+metrics = None
+learning_rate = 0.0
+
+model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Model training
+
+history = model.fit(X_train, y_train, epochs=10, batch_size=128, validation_data=(X_test, y_test), verbose=2)
+
+# Model Evaluation on validation data
+
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
+labels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+y_pred = model.predict(X_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+
+y_true = np.argmax(y_test, axis=1)
+
+cm = confusion_matrix(y_true, y_pred_classes)
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.show()
+
+# Model evaluation
+
+# Hyperparameter tunning and regularization techniques
