@@ -99,4 +99,12 @@ plt.show()
 
 # Model evaluation
 
+test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
+print("Test Loss:", test_loss)
+print("Test Accuracy:", test_accuracy)
+
+from sklearn.metrics import classification_report
+print("Classification Report:")
+print(classification_report(y_true, y_pred_classes, target_names=labels))
+
 # Hyperparameter tunning and regularization techniques
